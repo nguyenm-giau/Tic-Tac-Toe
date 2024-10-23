@@ -21,7 +21,7 @@ const GameBoard = function() {
 
     const printBoard = () => {
         const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
-        console.log(boardWithCellValues)
+        console.table(boardWithCellValues)
     }
 
 
@@ -106,9 +106,16 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
             return true // Top-right to bottom-left
         }
 
+        // check draw
+        const isDraw = boardFormat.every(array => !array.includes(null))
+
+        if (isDraw) {
+            return "Draw"
+        }
     
         return false // No win found
     };
+
 
 
     const playRound = (row, column) => {
@@ -117,7 +124,10 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
 
             board.placeMark(row, column, getActivePlayer().marker);
             
-            if (checkWin(board.getBoard())) {
+            if (checkWin(board.getBoard()) === "Draw") {
+                console.log("It's a draw!")
+                board.printBoard()
+            } else if (checkWin(board.getBoard())) {
                 console.log(`${getActivePlayer().name} wins!`);
                 board.printBoard()
             } else {
@@ -143,7 +153,30 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
 }
 
 
-const game = GameController()
+const simulateGame = (moves) => {
+    moves.forEach((move) => {
+        const { row, column } = move;
+        game.playRound(row, column);
+    });
+};
+
+const game = GameController("Tuan", "Hoang");
+
+// Define moves for simulation
+const drawMoves = [
+    { row: 0, column: 1 }, // Player X
+    { row: 0, column: 0 }, // Player O
+    { row: 1, column: 1 }, // Player X
+    { row: 0, column: 2 }, // Player O
+    { row: 1, column: 2 }, // Player X
+    { row: 1, column: 0 }, // Player O
+    { row: 2, column: 0 }, // Player X
+    { row: 2, column: 1 }, // Player O
+    { row: 2, column: 2 }, // Player X - This should result in a draw
+];
+
+// Run the simulation
+// simulateGame(drawMoves);
 
 
 
