@@ -37,17 +37,22 @@ const Cell = function() {
         value = player
     }
 
+    const resetValue = () => {
+        value = null
+    }
+
 
     const getValue = () => value
 
     return {
         addMark,
-        getValue
+        getValue,
+        resetValue
     }
 }
 
 
-const GameController = function(playerOneName = "Player One", playerTwoName = "Player Two") {
+const GameController = function(playerOneName = "Player One", playerTwoName = "Player Two", computer = "false") {
     const board = GameBoard()
 
     const players = [{
@@ -56,7 +61,8 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
     },
     {
         name: playerTwoName,
-        marker: "O"
+        marker: "O",
+        computer: computer
     }]
 
     let activePlayer = players[0]
@@ -80,9 +86,9 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
     }
 
 
-    const checkWin = (board) => {
-        const boardFormat = board.map((row) => row.map((cell) => cell.getValue()));
+    const checkWin = () => {
         const activeMarker = getActivePlayer().marker;
+        const boardFormat = board.getBoard().map((row) => row.map((cell) => cell.getValue()));
     
         // Check horizontal wins
         for (let row of boardFormat) {
@@ -117,6 +123,38 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
     };
 
 
+    const computerMove = (gameBoard) => {
+        let emptyCells = []
+
+        gameBoard.forEach((row, rowIndex) => {
+            row.forEach((cell, columnIndex) => {
+                if (cell.getValue() === null) {
+                    emptyCells.push([rowIndex, columnIndex])
+                }
+            })
+        })
+        console.log(emptyCells.length)
+
+        console.log(players)
+
+        
+        const randomMove = Math.floor(Math.random() * emptyCells.length)
+
+        board.placeMark(...emptyCells[randomMove], getActivePlayer().marker)
+
+        console.log(...emptyCells[randomMove], emptyCells)
+    }
+
+    const resetGame = () => {
+        board.getBoard().forEach(row => {
+        row.forEach(cell => {
+            cell.resetValue()
+        })
+      })
+      board.printBoard()
+    }
+
+
 
     const playRound = (row, column) => {
         if (isCellEmpty(row, column)) {
@@ -130,8 +168,15 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
             } else if (checkWin(board.getBoard())) {
                 console.log(`${getActivePlayer().name} wins!`);
                 board.printBoard()
+            } else if (players[1].computer) {
+                console.log("computer play")
+                switchPlayerTurn();
+                computerMove(board.getBoard())
+                switchPlayerTurn();
+                printNewRound()
             } else {
                 switchPlayerTurn();
+                computerMove(board.getBoard())
                 printNewRound();
                 console.log("No winner yet.");
             }
@@ -143,11 +188,11 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
     
     printNewRound()
 
-    checkWin(board.getBoard())
     return {
         playRound,
         getActivePlayer,
         getBoard: board.getBoard,
+        resetGame
     }
 
 }
@@ -159,8 +204,7 @@ const simulateGame = (moves) => {
         game.playRound(row, column);
     });
 };
-
-const game = GameController("Tuan", "Hoang");
+const game = GameController("Tuan", "Hoang", true);
 
 // Define moves for simulation
 const drawMoves = [
@@ -174,7 +218,6 @@ const drawMoves = [
     { row: 2, column: 1 }, // Player O
     { row: 2, column: 2 }, // Player X - This should result in a draw
 ];
-
 // Run the simulation
 // simulateGame(drawMoves);
 
