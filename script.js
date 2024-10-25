@@ -52,7 +52,7 @@ const Cell = function() {
 }
 
 
-const GameController = function(playerOneName = "Player One", playerTwoName = "Player Two", computer = "false") {
+const GameController = function(playerOneName = "Player One", playerTwoName = "Player Two") {
     const board = GameBoard()
 
     const players = [{
@@ -62,8 +62,9 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
     {
         name: playerTwoName,
         marker: "O",
-        computer: computer
-    }]
+        computer: true
+    },]
+
 
     let activePlayer = players[0]
 
@@ -144,6 +145,7 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
 
         console.log(...emptyCells[randomMove], emptyCells)
     }
+    
 
     const resetGame = () => {
         board.getBoard().forEach(row => {
@@ -151,6 +153,9 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
             cell.resetValue()
         })
       })
+
+
+      activePlayer = players[0]
       board.printBoard()
     }
 
@@ -161,22 +166,24 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
             console.log(`${getActivePlayer().name} marks row ${row}, column ${column}, with ${getActivePlayer().marker}`);
 
             board.placeMark(row, column, getActivePlayer().marker);
+
+            const roundResult = checkWin(board.getBoard())
             
-            if (checkWin(board.getBoard()) === "Draw") {
+            if (roundResult === "Draw") {
                 console.log("It's a draw!")
                 board.printBoard()
-            } else if (checkWin(board.getBoard())) {
+            } else if (roundResult) {
                 console.log(`${getActivePlayer().name} wins!`);
                 board.printBoard()
             } else if (players[1].computer) {
-                console.log("computer play")
+                console.log("Computer's turn")
                 switchPlayerTurn();
                 computerMove(board.getBoard())
                 switchPlayerTurn();
                 printNewRound()
             } else {
+                console.log(players)
                 switchPlayerTurn();
-                computerMove(board.getBoard())
                 printNewRound();
                 console.log("No winner yet.");
             }
@@ -194,32 +201,10 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
         getBoard: board.getBoard,
         resetGame
     }
-
 }
 
+const game = GameController("Tuan", "Hoang");
 
-const simulateGame = (moves) => {
-    moves.forEach((move) => {
-        const { row, column } = move;
-        game.playRound(row, column);
-    });
-};
-const game = GameController("Tuan", "Hoang", true);
-
-// Define moves for simulation
-const drawMoves = [
-    { row: 0, column: 1 }, // Player X
-    { row: 0, column: 0 }, // Player O
-    { row: 1, column: 1 }, // Player X
-    { row: 0, column: 2 }, // Player O
-    { row: 1, column: 2 }, // Player X
-    { row: 1, column: 0 }, // Player O
-    { row: 2, column: 0 }, // Player X
-    { row: 2, column: 1 }, // Player O
-    { row: 2, column: 2 }, // Player X - This should result in a draw
-];
-// Run the simulation
-// simulateGame(drawMoves);
 
 
 

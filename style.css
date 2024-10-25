@@ -1,1 +1,76 @@
 @import 'node_modules/modern-normalize/modern-normalize.css';
+
+
+* {
+    margin: 0;
+}
+
+:root {
+    --bg-color: rgb(241 245 249);
+    --container-color: rgb(255 255 255);
+}
+
+body {
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: var(--container-color);
+    width: clamp(350px, 85vw, 450px);
+    max-height: 700px;
+    padding: 30px 40px;
+    border-radius: 8px;
+}
+
+.container > h1 {
+    margin-bottom: 20px;
+}
+
+.next-player {
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.container :nth-child(-n + 2) {
+    text-align: center;
+}
+
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.cell {
+    border: 1px solid rgb(207, 207, 207);
+    width: 100%;
+    height: clamp(80px, 20vw, 110px);
+}
+
+.cell:hover {
+    cursor: pointer;
+    border: 1px solid black;
+}
+
+.reset-game {
+    width: 100%;
+    margin-top: 20px;
+    background-color: #2563eb;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: clamp(1rem, 4vw, 1.3rem);
+    padding: 13px 0;
+    border-radius: 8px;
+}
+
+.reset-game:hover {
+    cursor: pointer;
+}
