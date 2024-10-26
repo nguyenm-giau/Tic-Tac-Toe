@@ -30,7 +30,7 @@ body {
     margin-bottom: 20px;
 }
 
-.next-player {
+.player-turn {
     margin-bottom: 15px;
     font-weight: bold;
     font-size: 1.1rem;
@@ -52,11 +52,12 @@ body {
     border: 1px solid rgb(207, 207, 207);
     width: 100%;
     height: clamp(80px, 20vw, 110px);
+    background: none;
 }
 
 .cell:hover {
     cursor: pointer;
-    border: 1px solid black;
+    border: 2px solid #1e293b;
 }
 
 .reset-game {
@@ -73,4 +74,5 @@ body {
 
 .reset-game:hover {
     cursor: pointer;
+    background-color: #1e40af;
 }

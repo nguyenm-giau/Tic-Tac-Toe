@@ -22,6 +22,7 @@ const GameBoard = function() {
     const printBoard = () => {
         const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
         console.table(boardWithCellValues)
+        return boardWithCellValues
     }
 
 
@@ -62,7 +63,7 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
     {
         name: playerTwoName,
         marker: "O",
-        computer: true
+        computer: false
     },]
 
 
@@ -203,9 +204,64 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
     }
 }
 
-const game = GameController("Tuan", "Hoang");
 
 
+const GameScreenController = () => {
+    const game = GameController()
+    const boardDiv = document.querySelector(".game-board")
+    const playerTurnDiv = document.querySelector(".player-turn")
+    const playerTurnMark = document.querySelector(".player-mark")
+    const resetGameButton = document.querySelector(".reset-game")
+
+    const updateScreen = () => {
+        boardDiv.textContent = "";
+
+        const board = game.getBoard()
+        const activePlayer = game.getActivePlayer()
 
 
+        playerTurnDiv.textContent = `${activePlayer.name}'s turn: ${playerTurnMark.textContent = activePlayer.marker}`
 
+
+        board.forEach((row, rowIndex) => {
+            row.forEach((cell, columnIndex) => {
+                const cellButton = document.createElement("button")
+
+                cellButton.classList.add("cell")
+
+                cellButton.dataset.row = rowIndex
+                cellButton.dataset.column = columnIndex
+                cellButton.textContent = cell.getValue()
+                boardDiv.appendChild(cellButton)
+            })
+        })
+    }
+
+    const clickHandlerBoard = (e) => {
+        const selectedRow = e.target.dataset.row
+        const selectedColumn = e.target.dataset.column
+
+        if (!selectedColumn) return
+
+        game.playRound(selectedRow, selectedColumn)
+        updateScreen()
+
+    }
+
+
+    const resetGame = () => {
+        game.resetGame()
+        updateScreen()
+    }
+
+    boardDiv.addEventListener("click", clickHandlerBoard)
+    resetGameButton.addEventListener("click", resetGame)
+
+
+    updateScreen()
+
+
+}
+
+
+GameScreenController()
