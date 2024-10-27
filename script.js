@@ -88,6 +88,10 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
     }
 
 
+    let gameActive = true;
+
+    const getGameState = () => gameActive
+
     const checkWin = () => {
         const activeMarker = getActivePlayer().marker;
         const boardFormat = board.getBoard().map((row) => row.map((cell) => cell.getValue()));
@@ -95,6 +99,7 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
         // Check horizontal wins
         for (let row of boardFormat) {
             if (row.every(val => val === activeMarker)) {
+                gameActive = false
                 return true // Win found
             }
         }
@@ -102,15 +107,18 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
         // Check vertical wins
         for (let col = 0; col < boardFormat[0].length; col++) {
             if (boardFormat.every(row => row[col] === activeMarker)) {
+                gameActive = false
                 return true // Win found
             }
         }
     
         // Check diagonal wins
         if (boardFormat.every((row, index) => row[index] === activeMarker)) {
+            gameActive = false
             return true // Top-left to bottom-right
         }
         if (boardFormat.every((row, index) => row[boardFormat.length - 1 - index] === activeMarker)) {
+            gameActive = false
             return true // Top-right to bottom-left
         }
 
@@ -118,6 +126,7 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
         const isDraw = boardFormat.every(array => !array.includes(null))
 
         if (isDraw) {
+            gameActive = false
             return "Draw"
         }
     
@@ -149,6 +158,8 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
     
 
     const resetGame = () => {
+        gameActive = true;
+
         board.getBoard().forEach(row => {
         row.forEach(cell => {
             cell.resetValue()
@@ -163,6 +174,11 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
 
 
     const playRound = (row, column) => {
+        if (!gameActive) {
+            return
+        }
+
+
         if (isCellEmpty(row, column)) {
             console.log(`${getActivePlayer().name} marks row ${row}, column ${column}, with ${getActivePlayer().marker}`);
 
@@ -182,7 +198,7 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
                 computerMove(board.getBoard())
                 switchPlayerTurn();
                 printNewRound()
-            } else {
+            } else  {
                 console.log(players)
                 switchPlayerTurn();
                 printNewRound();
@@ -200,7 +216,8 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
         playRound,
         getActivePlayer,
         getBoard: board.getBoard,
-        resetGame
+        resetGame,
+        getGameState
     }
 }
 
@@ -232,6 +249,13 @@ const GameScreenController = () => {
                 cellButton.dataset.row = rowIndex
                 cellButton.dataset.column = columnIndex
                 cellButton.textContent = cell.getValue()
+
+                if (cell.getValue() === "X") {
+                    cellButton.classList.add("player1");
+                } else if (cell.getValue() === "O") {
+                    cellButton.classList.add("player2");
+                }
+                
                 boardDiv.appendChild(cellButton)
             })
         })
@@ -241,11 +265,21 @@ const GameScreenController = () => {
         const selectedRow = e.target.dataset.row
         const selectedColumn = e.target.dataset.column
 
-        if (!selectedColumn) return
+        if (!e.target.closest("button")) {
+            return
+        }
+
+        if (game.getActivePlayer().marker === "X") {
+            e.target.classList.add("player1")
+        } else {
+            e.target.classList.add("player2")
+        }
 
         game.playRound(selectedRow, selectedColumn)
         updateScreen()
 
+        console.log(e.target)
+        
     }
 
 
@@ -254,7 +288,36 @@ const GameScreenController = () => {
         updateScreen()
     }
 
+    const playerHighlight = (e) => {
+        if (e.target.tagName !== "BUTTON") return;
+        
+        const activePlayer = game.getActivePlayer();
+
+
+        if (e.target.textContent === "O" || e.target.textContent === "X" || game.getGameState() === false) {
+            return
+        } else {
+            const activePlayerMarkSpan = document.createElement("span")
+            activePlayerMarkSpan.textContent = activePlayer.marker
+            activePlayerMarkSpan.classList.add("preview-mark")
+            e.target.appendChild(activePlayerMarkSpan)
+        }
+        
+
+    }
+      
+    const removeHighlight = (e) => {
+        if (e.target.tagName !== "BUTTON") return;
+        const previewMark = document.querySelector(".preview-mark")
+
+        if (previewMark) {
+            previewMark.remove()
+        }
+    }
+
     boardDiv.addEventListener("click", clickHandlerBoard)
+    boardDiv.addEventListener("mouseover", playerHighlight)
+    boardDiv.addEventListener("mouseout", removeHighlight)
     resetGameButton.addEventListener("click", resetGame)
 
 

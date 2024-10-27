@@ -8,6 +8,8 @@
 :root {
     --bg-color: rgb(241 245 249);
     --container-color: rgb(255 255 255);
+    --player1-color: #0284c7;
+    --player2-color: #dc2626;
 }
 
 body {
@@ -53,12 +55,44 @@ body {
     width: 100%;
     height: clamp(80px, 20vw, 110px);
     background: none;
+    font-size: clamp(2rem, 8vw, 3rem);
+    position: relative;
 }
 
 .cell:hover {
     cursor: pointer;
     border: 2px solid #1e293b;
+    background: #f8fafc;
 }
+
+.cell::after {
+    content: "";
+    width: 50px;
+    height: 50px;
+
+}
+
+.preview-mark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+
+
+    opacity: 0.2;
+
+}
+
+.player1 {
+    color: var(--player1-color);
+}
+
+.player2 {
+    color: var(--player2-color);
+}
+
+
 
 .reset-game {
     width: 100%;
