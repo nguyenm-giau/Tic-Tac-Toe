@@ -89,37 +89,42 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
 
 
     let gameActive = true;
+    let winningCells = [];
 
     const getGameState = () => gameActive
 
     const checkWin = () => {
         const activeMarker = getActivePlayer().marker;
         const boardFormat = board.getBoard().map((row) => row.map((cell) => cell.getValue()));
+
+        let isWin = false
     
         // Check horizontal wins
-        for (let row of boardFormat) {
-            if (row.every(val => val === activeMarker)) {
-                gameActive = false
-                return true // Win found
+        for (let rowIndex = 0; rowIndex < boardFormat.length; rowIndex++) {
+            if (boardFormat[rowIndex].every(val => val === activeMarker)) {
+                isWin = true
+                winningCells = boardFormat[rowIndex].map((_, colIndex) => [rowIndex, colIndex]);
             }
         }
     
         // Check vertical wins
         for (let col = 0; col < boardFormat[0].length; col++) {
             if (boardFormat.every(row => row[col] === activeMarker)) {
-                gameActive = false
-                return true // Win found
+                isWin = true
+                winningCells = boardFormat.map((_, rowIndex) => [rowIndex, col]);
             }
         }
     
         // Check diagonal wins
         if (boardFormat.every((row, index) => row[index] === activeMarker)) {
-            gameActive = false
-            return true // Top-left to bottom-right
+            isWin = true
+            winningCells = boardFormat.map((_, index) => [index, index]);
         }
+
+        
         if (boardFormat.every((row, index) => row[boardFormat.length - 1 - index] === activeMarker)) {
-            gameActive = false
-            return true // Top-right to bottom-left
+            isWin = true
+            winningCells = boardFormat.map((_, index) => [index, boardFormat.length - 1 - index]);
         }
 
         // check draw
@@ -128,11 +133,17 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
         if (isDraw) {
             gameActive = false
             return "Draw"
+        } else if (isWin) {
+            gameActive = false
+            return {isWin}
+        } else {
+            return false // No win found
         }
-    
-        return false // No win found
+
     };
 
+
+   
 
     const computerMove = (gameBoard) => {
         let emptyCells = []
@@ -144,16 +155,12 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
                 }
             })
         })
-        console.log(emptyCells.length)
-
-        console.log(players)
 
         
         const randomMove = Math.floor(Math.random() * emptyCells.length)
 
         board.placeMark(...emptyCells[randomMove], getActivePlayer().marker)
 
-        console.log(...emptyCells[randomMove], emptyCells)
     }
     
 
@@ -166,7 +173,7 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
         })
       })
 
-
+      winningCells = [];
       activePlayer = players[0]
       board.printBoard()
     }
@@ -180,32 +187,26 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
 
 
         if (isCellEmpty(row, column)) {
-            console.log(`${getActivePlayer().name} marks row ${row}, column ${column}, with ${getActivePlayer().marker}`);
-
             board.placeMark(row, column, getActivePlayer().marker);
 
             const roundResult = checkWin(board.getBoard())
-            
+            console.log(roundResult)
             if (roundResult === "Draw") {
-                console.log("It's a draw!")
                 board.printBoard()
-            } else if (roundResult) {
+            } else if (roundResult.isWin) {
                 console.log(`${getActivePlayer().name} wins!`);
+
                 board.printBoard()
             } else if (players[1].computer) {
-                console.log("Computer's turn")
                 switchPlayerTurn();
                 computerMove(board.getBoard())
                 switchPlayerTurn();
                 printNewRound()
             } else  {
-                console.log(players)
                 switchPlayerTurn();
                 printNewRound();
-                console.log("No winner yet.");
             }
         } else {
-            console.log("The cell is already marked, choose another one");
             printNewRound();
         }
     };
@@ -217,13 +218,15 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
         getActivePlayer,
         getBoard: board.getBoard,
         resetGame,
-        getGameState
+        getGameState,
+        checkWin,
+        getWinningCells: () => winningCells
     }
 }
 
 
 
-const GameScreenController = () => {
+const GameScreenController = (() => {
     const game = GameController()
     const boardDiv = document.querySelector(".game-board")
     const playerTurnDiv = document.querySelector(".player-turn")
@@ -231,10 +234,11 @@ const GameScreenController = () => {
     const resetGameButton = document.querySelector(".reset-game")
 
     const updateScreen = () => {
-        boardDiv.textContent = "";
+        boardDiv.innerHTML = "";
 
         const board = game.getBoard()
         const activePlayer = game.getActivePlayer()
+        const winningCells = game.getWinningCells()
 
 
         playerTurnDiv.textContent = `${activePlayer.name}'s turn: ${playerTurnMark.textContent = activePlayer.marker}`
@@ -255,7 +259,13 @@ const GameScreenController = () => {
                 } else if (cell.getValue() === "O") {
                     cellButton.classList.add("player2");
                 }
-                
+
+                winningCells.forEach(([winRow, winCol]) => {
+                    if (winRow === rowIndex && winCol === columnIndex) {
+                        cellButton.classList.add("winning-cell")
+                    }  
+                })
+
                 boardDiv.appendChild(cellButton)
             })
         })
@@ -278,7 +288,6 @@ const GameScreenController = () => {
         game.playRound(selectedRow, selectedColumn)
         updateScreen()
 
-        console.log(e.target)
         
     }
 
@@ -324,7 +333,4 @@ const GameScreenController = () => {
     updateScreen()
 
 
-}
-
-
-GameScreenController()
+})()
