@@ -194,7 +194,7 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
             if (roundResult === "Draw") {
                 board.printBoard()
             } else if (roundResult.isWin) {
-                console.log(`${getActivePlayer().name} wins!`);
+                document.querySelector(".player-turn").textContent = `${getActivePlayer().name} Win!`
 
                 board.printBoard()
             } else if (players[1].computer) {
@@ -241,7 +241,9 @@ const GameScreenController = (() => {
         const winningCells = game.getWinningCells()
 
 
-        playerTurnDiv.textContent = `${activePlayer.name}'s turn: ${playerTurnMark.textContent = activePlayer.marker}`
+        if (game.getGameState()) {
+            playerTurnDiv.textContent = `${activePlayer.name}'s turn: ${playerTurnMark.textContent = activePlayer.marker}`
+        }
 
 
         board.forEach((row, rowIndex) => {
