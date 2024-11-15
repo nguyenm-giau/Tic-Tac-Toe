@@ -17,16 +17,9 @@ const GameBoard = function() {
     const placeMark = (row, column, player) => { 
         board[row][column].addMark(player)
     }
+    
 
-
-    const printBoard = () => {
-        const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
-        console.table(boardWithCellValues)
-        return boardWithCellValues
-    }
-
-
-    return { getBoard, printBoard, placeMark }
+    return { getBoard, placeMark }
 }
 
 
@@ -173,7 +166,6 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
 
       winningCells = []
       activePlayer = players[0]
-      board.printBoard()
     }
 
 
@@ -196,8 +188,9 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
                 document.querySelector(".player-turn").textContent = "Draw!"
             } else if (players[1].computer) {
                 switchPlayerTurn()
-                computerMove(board.getBoard())
+
                 
+                computerMove(board.getBoard())
                 
                 const aiRoundResult = checkWin()
 
@@ -278,6 +271,7 @@ const GameScreenController = (() => {
                 })
 
                 boardDiv.appendChild(cellButton)
+                
             })
         })
     }
@@ -290,11 +284,6 @@ const GameScreenController = (() => {
             return
         }
 
-        if (game.getActivePlayer().marker === "X") {
-            e.target.classList.add("player1")
-        } else {
-            e.target.classList.add("player2")
-        }
 
         game.playRound(selectedRow, selectedColumn)
         updateScreen()
