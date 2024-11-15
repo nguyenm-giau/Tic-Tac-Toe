@@ -1,6 +1,6 @@
 const GameBoard = function() {
-    const rows = 3;
-    const columns = 3;
+    const rows = 3
+    const columns = 3
     const board = []
 
     for (let i = 0; i < rows; i++) {
@@ -53,21 +53,27 @@ const Cell = function() {
 }
 
 
-const GameController = function(playerOneName = "Player One", playerTwoName = "Player Two") {
+const GameController = function(playerOneName = "Player One", playerTwoName = "Player Two", playAgainstAI = false, userMark = "X") {
     const board = GameBoard()
+
+
+    const aiMark = userMark === "X" ? "O" : "X"
+
 
     const players = [{
         name: playerOneName,
-        marker: "X"
+        marker: userMark,
     },
     {
-        name: playerTwoName,
-        marker: "O",
-        computer: false
+        name: playAgainstAI ? "Computer" : playerTwoName,
+        marker: aiMark,
+        computer: playAgainstAI
     },]
 
 
     let activePlayer = players[0]
+    let gameActive = true
+    let winningCells = []
 
 
     const switchPlayerTurn = () => {
@@ -76,26 +82,18 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
 
 
     const getActivePlayer = () => activePlayer
+    const getGameState = () => gameActive
 
 
-    const printNewRound = () => {
-        board.printBoard()
-        console.log(`${getActivePlayer().name}'s turn.`)
-    }
 
     const isCellEmpty = (row, column) => {
         return board.getBoard()[row][column].getValue() === null
     }
 
 
-    let gameActive = true;
-    let winningCells = [];
-
-    const getGameState = () => gameActive
-
     const checkWin = () => {
-        const activeMarker = getActivePlayer().marker;
-        const boardFormat = board.getBoard().map((row) => row.map((cell) => cell.getValue()));
+        const activeMarker = getActivePlayer().marker
+        const boardFormat = board.getBoard().map((row) => row.map((cell) => cell.getValue()))
 
         let isWin = false
     
@@ -103,7 +101,7 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
         for (let rowIndex = 0; rowIndex < boardFormat.length; rowIndex++) {
             if (boardFormat[rowIndex].every(val => val === activeMarker)) {
                 isWin = true
-                winningCells = boardFormat[rowIndex].map((_, colIndex) => [rowIndex, colIndex]);
+                winningCells = boardFormat[rowIndex].map((_, colIndex) => [rowIndex, colIndex])
             }
         }
     
@@ -111,36 +109,36 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
         for (let col = 0; col < boardFormat[0].length; col++) {
             if (boardFormat.every(row => row[col] === activeMarker)) {
                 isWin = true
-                winningCells = boardFormat.map((_, rowIndex) => [rowIndex, col]);
+                winningCells = boardFormat.map((_, rowIndex) => [rowIndex, col])
             }
         }
     
         // Check diagonal wins
         if (boardFormat.every((row, index) => row[index] === activeMarker)) {
             isWin = true
-            winningCells = boardFormat.map((_, index) => [index, index]);
+            winningCells = boardFormat.map((_, index) => [index, index])
         }
 
         
         if (boardFormat.every((row, index) => row[boardFormat.length - 1 - index] === activeMarker)) {
             isWin = true
-            winningCells = boardFormat.map((_, index) => [index, boardFormat.length - 1 - index]);
+            winningCells = boardFormat.map((_, index) => [index, boardFormat.length - 1 - index])
         }
 
         // check draw
         const isDraw = boardFormat.every(array => !array.includes(null))
 
-        if (isDraw) {
-            gameActive = false
-            return "Draw"
-        } else if (isWin) {
+        if (isWin) {
             gameActive = false
             return {isWin}
+        } else if (isDraw) {
+            gameActive = false
+            return "Draw"
         } else {
             return false // No win found
         }
 
-    };
+    }
 
 
    
@@ -165,7 +163,7 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
     
 
     const resetGame = () => {
-        gameActive = true;
+        gameActive = true
 
         board.getBoard().forEach(row => {
         row.forEach(cell => {
@@ -173,7 +171,7 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
         })
       })
 
-      winningCells = [];
+      winningCells = []
       activePlayer = players[0]
       board.printBoard()
     }
@@ -187,31 +185,38 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
 
 
         if (isCellEmpty(row, column)) {
-            board.placeMark(row, column, getActivePlayer().marker);
+            board.placeMark(row, column, getActivePlayer().marker)
 
             const roundResult = checkWin(board.getBoard())
-            console.log(roundResult)
-            if (roundResult === "Draw") {
-                board.printBoard()
-            } else if (roundResult.isWin) {
-                document.querySelector(".player-turn").textContent = `${getActivePlayer().name} Win!`
 
-                board.printBoard()
+            if (roundResult.isWin) {
+                document.querySelector(".player-turn").textContent = `${getActivePlayer().name} Win!`
+                return
+            } else if (roundResult === "Draw") {
+                document.querySelector(".player-turn").textContent = "Draw!"
             } else if (players[1].computer) {
-                switchPlayerTurn();
+                switchPlayerTurn()
                 computerMove(board.getBoard())
-                switchPlayerTurn();
-                printNewRound()
+                
+                
+                const aiRoundResult = checkWin()
+
+                if (aiRoundResult.isWin) {
+                    document.querySelector(".player-turn").textContent = `${getActivePlayer().name} Win!`
+                    return
+                } else if (aiRoundResult === "Draw") {
+                    document.querySelector(".player-turn").textContent = "Draw!"
+                    return
+                }
+
+                // Switch back to user turn
+                switchPlayerTurn()
             } else  {
-                switchPlayerTurn();
-                printNewRound();
+                switchPlayerTurn()
             }
-        } else {
-            printNewRound();
         }
-    };
+    }
     
-    printNewRound()
 
     return {
         playRound,
@@ -227,14 +232,15 @@ const GameController = function(playerOneName = "Player One", playerTwoName = "P
 
 
 const GameScreenController = (() => {
-    const game = GameController()
+    let game = GameController()
     const boardDiv = document.querySelector(".game-board")
     const playerTurnDiv = document.querySelector(".player-turn")
     const playerTurnMark = document.querySelector(".player-mark")
     const resetGameButton = document.querySelector(".reset-game")
+    const dialog = document.querySelector("dialog")
 
     const updateScreen = () => {
-        boardDiv.innerHTML = "";
+        boardDiv.innerHTML = ""
 
         const board = game.getBoard()
         const activePlayer = game.getActivePlayer()
@@ -242,7 +248,9 @@ const GameScreenController = (() => {
 
 
         if (game.getGameState()) {
+            playerTurnMark.classList.add(`${activePlayer.marker}`)
             playerTurnDiv.textContent = `${activePlayer.name}'s turn: ${playerTurnMark.textContent = activePlayer.marker}`
+
         }
 
 
@@ -257,9 +265,9 @@ const GameScreenController = (() => {
                 cellButton.textContent = cell.getValue()
 
                 if (cell.getValue() === "X") {
-                    cellButton.classList.add("player1");
+                    cellButton.classList.add("player1")
                 } else if (cell.getValue() === "O") {
-                    cellButton.classList.add("player2");
+                    cellButton.classList.add("player2")
                 }
 
                 winningCells.forEach(([winRow, winCol]) => {
@@ -300,9 +308,9 @@ const GameScreenController = (() => {
     }
 
     const playerHighlight = (e) => {
-        if (e.target.tagName !== "BUTTON") return;
+        if (e.target.tagName !== "BUTTON") return
         
-        const activePlayer = game.getActivePlayer();
+        const activePlayer = game.getActivePlayer()
 
 
         if (e.target.textContent === "O" || e.target.textContent === "X" || game.getGameState() === false) {
@@ -318,7 +326,7 @@ const GameScreenController = (() => {
     }
       
     const removeHighlight = (e) => {
-        if (e.target.tagName !== "BUTTON") return;
+        if (e.target.tagName !== "BUTTON") return
         const previewMark = document.querySelector(".preview-mark")
 
         if (previewMark) {
@@ -332,7 +340,52 @@ const GameScreenController = (() => {
     resetGameButton.addEventListener("click", resetGame)
 
 
+    const modal = document.querySelector(".modal")
+    const startButton = modal.querySelector("button")
+    const player1Input = modal.querySelector(".input-container input#username")
+    const player2Input = modal.querySelectorAll(".input-container input#username")[1]
+    const aiToggle = modal.querySelector(".ai-toggle")
+    const userMarkX = modal.querySelector("input#x")
+
+    const updateAiState = () => {
+        const aiModeChecked = aiToggle.checked
+
+        const userNameInput = document.querySelectorAll(".player-name-input")
+        const fieldset = document.querySelector("fieldset")
+
+        if (aiModeChecked) {
+
+            userNameInput[0].children[0].textContent = "Player 1"
+            userNameInput[1].style.display = "none"
+
+            fieldset.style.display = "flex"
+        } else {
+            userNameInput[0].children[0].textContent = "Player 1 (X)"
+            userNameInput[1].style.display  = "flex"
+            
+             fieldset.style.display = "none"
+        }
+    }
+
+    updateAiState()
+    
+    aiToggle.addEventListener("click", updateAiState)
+
+
+    startButton.addEventListener("click", () => {
+        const player1Name = player1Input.value.trim() || "Player One"
+        const player2Name = player2Input.value.trim() || "Player Two"
+        const playAgainstAI = aiToggle.checked
+        const userMark = userMarkX.checked ? "X" : "O"
+
+        game = GameController(player1Name, player2Name, playAgainstAI, userMark)
+    
+        modal.close()
+        modal.style.display = "none"
+        updateScreen()
+      })
+
     updateScreen()
 
-
+    dialog.showModal()
 })()

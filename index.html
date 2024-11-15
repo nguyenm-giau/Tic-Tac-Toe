@@ -12,10 +12,84 @@
       <div class="container">
         <h1>Tic Tac Toe</h1>
 
-        <div class="player-turn"><span class="player-mark">X</span></div>
+        <div class="player-turn"><span class="player-mark"></span></div>
 
         <div class="game-board"></div>
         <button class="reset-game">Reset Game</button>
+
+        <dialog class="modal">
+          <div class="player-name-input">
+            <p>Player 1 (X)</p>
+
+            <div class="input-container">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="player1"
+              >
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+
+              <input type="text" id="username" placeholder="Player One" />
+            </div>
+          </div>
+
+          <div class="player-name-input">
+            <p>Player 2 (O)</p>
+
+            <div class="input-container">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="player2"
+              >
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <input type="text" id="username" placeholder="Player Two" />
+            </div>
+          </div>
+
+          <div class="ai-container">
+            <label class="switch">
+              <input type="checkbox" class="ai-toggle" />
+              <span class="slider round"></span>
+            </label>
+            <p>Play against AI</p>
+          </div>
+
+          <div class="user-mark">
+            <fieldset>
+              <div>Play As</div>
+              <div class="user-mark-container">
+                <input type="radio" id="x" name="user-mark" checked />
+                <label for="x">X</label>
+              </div>
+
+              <div class="user-mark-container">
+                <input type="radio" id="o" name="user-mark" />
+                <label for="o">O</label>
+              </div>
+            </fieldset>
+          </div>
+
+          <button autofocus>Start Game</button>
+        </dialog>
       </div>
     </main>
 

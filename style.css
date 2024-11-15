@@ -10,6 +10,7 @@
     --container-color: rgb(255 255 255);
     --player1-color: #0284c7;
     --player2-color: #dc2626;
+    --button-color: #2563eb;
 }
 
 body {
@@ -20,12 +21,14 @@ body {
     height: 100vh;
 }
 
+
 .container {
     background-color: var(--container-color);
     width: clamp(350px, 85vw, 450px);
     max-height: 700px;
     padding: 30px 40px;
     border-radius: 8px;
+    position: relative;
 }
 
 .container > h1 {
@@ -38,7 +41,8 @@ body {
     font-size: 1.1rem;
 }
 
-.container :nth-child(-n + 2) {
+.container > h1,
+.container > .player-turn {
     text-align: center;
 }
 
@@ -102,10 +106,11 @@ body {
 
 
 
-.reset-game {
+.reset-game,
+dialog > button {
     width: 100%;
     margin-top: 20px;
-    background-color: #2563eb;
+    background-color: var(--button-color);
     border: none;
     color: white;
     font-weight: bold;
@@ -114,7 +119,8 @@ body {
     border-radius: 8px;
 }
 
-.reset-game:hover {
+.reset-game:hover,
+dialog > button:hover {
     cursor: pointer;
     background-color: #1e40af;
 }
@@ -127,3 +133,160 @@ body {
     background-color: rgb(155, 0, 0);
 
 }
+
+
+.modal {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(400px, 80vw);
+    min-height: 350px;
+    border: none;
+    border-radius: 8px;
+
+
+
+
+}
+
+
+.modal > h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.input-container {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+.input-container > input {
+    width: 100%;
+    height: 40px;
+    border: 1px solid grey;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.input-container > input::placeholder {
+    text-align: left;
+}
+
+.input-container > svg {
+    align-self: center;
+}
+
+
+.player-name-input {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.player-name-input > p {
+    align-self: self-start;
+}
+
+
+
+fieldset {
+    margin-top: 20px;
+
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    border: none;
+    display: none;
+}
+
+dialog > button {
+    margin-top: 20px;
+}
+
+dialog > button {
+    font-size: clamp(0.9rem, 4vw, 1.1rem);
+}
+
+
+dialog::backdrop {
+    background-color: rgba(37, 37, 37, 0.4);
+}
+
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: var(--button-color);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+
+.ai-container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
