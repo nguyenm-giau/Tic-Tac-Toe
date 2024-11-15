@@ -238,6 +238,7 @@ const GameScreenController = (() => {
     const playerTurnMark = document.querySelector(".player-mark")
     const resetGameButton = document.querySelector(".reset-game")
     const dialog = document.querySelector("dialog")
+    const menuIcon = document.querySelector(".menu")
 
     const updateScreen = () => {
         boardDiv.innerHTML = ""
@@ -338,6 +339,10 @@ const GameScreenController = (() => {
     boardDiv.addEventListener("mouseover", playerHighlight)
     boardDiv.addEventListener("mouseout", removeHighlight)
     resetGameButton.addEventListener("click", resetGame)
+    menuIcon.addEventListener("click", () => {
+        modal.style.display = "inline-block"
+        dialog.showModal()
+    })
 
 
     const modal = document.querySelector(".modal")

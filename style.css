@@ -19,8 +19,8 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    font-family: 'Roboto', Arial, sans-serif;
 }
-
 
 .container {
     background-color: var(--container-color);
@@ -105,6 +105,10 @@ body {
 }
 
 
+.menu:hover {
+    cursor: pointer;
+    background-color: #dfdfdf;
+}
 
 .reset-game,
 dialog > button {
@@ -119,12 +123,15 @@ dialog > button {
     border-radius: 8px;
 }
 
+/* .reset-game {
+    display: none;
+} */
+
 .reset-game:hover,
 dialog > button:hover {
     cursor: pointer;
     background-color: #1e40af;
 }
-
 
 .winning-cell::before {
     content: "";
@@ -135,24 +142,26 @@ dialog > button:hover {
 }
 
 
+@keyframes modalEnter {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
 .modal {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-self: center;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     width: min(400px, 80vw);
-    min-height: 350px;
+    min-height: 320px;
     border: none;
     border-radius: 8px;
 
 
-
-
+    animation: modalEnter 0.3s ease-out;
 }
-
 
 .modal > h2 {
     text-align: center;
@@ -181,7 +190,6 @@ dialog > button:hover {
     align-self: center;
 }
 
-
 .player-name-input {
     display: flex;
     flex-direction: column;
@@ -192,8 +200,6 @@ dialog > button:hover {
 .player-name-input > p {
     align-self: self-start;
 }
-
-
 
 fieldset {
     margin-top: 20px;
@@ -218,8 +224,6 @@ dialog::backdrop {
     background-color: rgba(37, 37, 37, 0.4);
 }
 
-
-/* The switch - the box around the slider */
 .switch {
   position: relative;
   display: inline-block;
@@ -227,14 +231,12 @@ dialog::backdrop {
   height: 34px;
 }
 
-/* Hide default HTML checkbox */
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-/* The slider */
 .slider {
   position: absolute;
   cursor: pointer;
@@ -273,7 +275,6 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-/* Rounded sliders */
 .slider.round {
   border-radius: 34px;
 }
@@ -282,7 +283,6 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-
 .ai-container {
     display: flex;
     align-items: center;
@@ -290,3 +290,59 @@ input:checked + .slider:before {
     gap: 10px;
 }
 
+.user-mark-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.user-mark-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.check-mark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 50%;
+}
+
+.user-mark-container:hover input ~ .check-mark {
+    background-color: #ccc;
+}
+  
+.user-mark-container input:checked ~ .check-mark {
+    background-color: #2196F3;
+}
+  
+.check-mark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+  
+.user-mark-container input:checked ~ .check-mark:after {
+    display: block;
+}
+  
+.user-mark-container .check-mark:after {
+    top: 9px;
+    left: 9px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+  
