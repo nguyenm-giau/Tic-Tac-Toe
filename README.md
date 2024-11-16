@@ -15,10 +15,9 @@ A fun implementation of the classic Tic Tac Toe game using HTML, CSS, and JavaSc
 
 ![Project Screenshot](https://imgur.com/pBTkJdD.png) <!-- Add a screenshot of your game here -->
 
-
 ## Live Demo
 
-Check out the live version of the game here: (https://nguyenm-giau.github.io/Tic-Tac-Toe/)
+Check out the live version of the game here: https://nguyenm-giau.github.io/Tic-Tac-Toe/
 
 ## Technologies Used
 
@@ -46,7 +45,6 @@ Check out the live version of the game here: (https://nguyenm-giau.github.io/Tic
    open index.html
    ```
 
-
 ## Game Logic Overview
 
 The game is managed through three main components:
@@ -55,7 +53,6 @@ The game is managed through three main components:
 2. **Cell Module**: Manages individual cell state, keeping track of the value (X or O) and reset functionality.
 3. **GameController Module**: Controls game flow, player turns, win conditions, and AI interactions.
 
-
 ## Future Improvements
 
 - Enhanced AI difficulty using the Minimax algorithm.
@@ -63,6 +60,6 @@ The game is managed through three main components:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE.md) file for details.
 
 Feel free to contribute to this project by submitting issues or pull requests!
