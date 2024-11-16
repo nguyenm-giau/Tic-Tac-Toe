@@ -87,14 +87,20 @@ body {
 
 .cell {
     border: 1px solid rgb(207, 207, 207);
-    width: 100%;
+    min-width: 100%;
     height: clamp(80px, 20vw, 110px);
     background: none;
-    font-size: clamp(2rem, 8vw, 3rem);
+    font-size: clamp(1.5rem, 7vw, 3rem);
     position: relative;
     display: inline-block;
     font-weight: bold;
 
+    outline: none;
+
+}
+
+.cell:focus {
+    outline: none;
 }
 
 .cell:hover {
